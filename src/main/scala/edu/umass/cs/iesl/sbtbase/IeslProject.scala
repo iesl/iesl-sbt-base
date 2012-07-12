@@ -31,6 +31,7 @@ object IeslProject {
     Project(id, file("."))
       .settings(scalaSettings: _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
+      .settings(getJarsTask)
       .settings(
       organization := iesl,
       version := vers,
@@ -61,4 +62,13 @@ object IeslProject {
     scalacOptions := Seq("-deprecation", "-unchecked", "-Xcheckinit", "-encoding", "utf8"),
     javacOptions ++= Seq("-Xlint:unchecked")
   )
+
+  // todo: use this mechanism to print the classpath to a file, to record what "latest.release" actually resolved to for each dependency in this build.
+
+  val getJars = TaskKey[Unit]("get-jars")
+
+  val getJarsTask = getJars <<= (target, fullClasspath in Runtime) map { (target, cp) =>
+    println("Target path is: "+target)
+    println("Full classpath is: "+cp.map(_.data).mkString(":"))
+  }
 }

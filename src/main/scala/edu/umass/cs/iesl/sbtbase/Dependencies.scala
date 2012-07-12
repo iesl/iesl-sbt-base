@@ -5,6 +5,19 @@ import Config._
 
 object Dependencies {
 
+
+  def jsonic(v: String = "latest.release") = "net.arnx" % "jsonic" % v
+
+  def jclOverSlf4j(v: String = "latest.release") = "org.slf4j" % "jcl-over-slf4j" % v
+
+  def commonsVfs2(v: String = "latest.release") ="org.apache.commons" % "commons-vfs2" % v exclude("commons-logging", "commons-logging")
+
+  def commonsCollections(v: String = "latest.release") = "commons-collections" % "commons-collections" % v
+
+  def commonsCompress(v: String = "latest.release") = "org.apache.commons" % "commons-compress" % v
+
+  def langdetect(v: String = "latest.release") = "com.cybozu.labs" % "langdetect" % v
+
   def scalaCompiler(v: String = scalaV) = "org.scala-lang" % "scala-compiler" % v
 
   def ieslScalaCommons(v: String = "latest.release") = "edu.umass.cs.iesl" %% "scalacommons" % v notTransitive() //  exclude("com.davidsoergel", "dsutils")
