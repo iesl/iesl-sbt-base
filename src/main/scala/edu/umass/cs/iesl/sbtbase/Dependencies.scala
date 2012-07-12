@@ -24,6 +24,10 @@ object Dependencies {
 
   def ieslScalaCommons(v: String = "latest.release") = "edu.umass.cs.iesl" %% "scalacommons" % v notTransitive() //  exclude("com.davidsoergel", "dsutils")
 
+  def bibmogrify(v: String = "latest.release") = "edu.umass.cs.iesl" %% "bibmogrify" % v
+
+  def pdfbox(v: String = "latest.release") = "org.apache.pdfbox" % "pdfbox" % v exclude("commons-logging", "commons-logging")
+
   def dsutils(v: String = "latest.release") = "com.davidsoergel" % "dsutils" % v exclude("commons-logging", "commons-logging")
 
   def classutil(v: String = "latest.release") = "org.clapper" %% "classutil" % v
