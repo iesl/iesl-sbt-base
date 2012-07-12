@@ -29,6 +29,6 @@ object ScalaCommonsBuild extends Build {
     mavenFindbugs())
 
 
-  lazy val scalacommons = IeslProject("scalacommons", vers, deps, Public)
+  lazy val scalacommons = IeslProject("scalacommons", vers, deps, Public, WithSnapshotDependencies)  // replace with NoSnapshotDependencies, or just remove, to guarantee releases only
 
 }
