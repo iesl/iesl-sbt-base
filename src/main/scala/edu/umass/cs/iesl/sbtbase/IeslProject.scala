@@ -60,7 +60,7 @@ object IeslProject {
   val scalaSettings = Seq(
     scalaVersion := scalaV,
     scalacOptions := Seq("-deprecation", "-unchecked", "-Xcheckinit", "-encoding", "utf8"),
-    javacOptions ++= Seq("-Xlint:unchecked")
+    javacOptions ++= Seq("-Xlint:unchecked", "-encoding", "utf8")
   )
 
   // todo: use this mechanism to print the classpath to a file, to record what "latest.release" actually resolved to for each dependency in this build.
