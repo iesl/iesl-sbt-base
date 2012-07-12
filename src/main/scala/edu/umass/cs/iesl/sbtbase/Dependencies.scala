@@ -26,6 +26,8 @@ object Dependencies {
 
   def bibmogrify(v: String = "latest.release") = "edu.umass.cs.iesl" %% "bibmogrify" % v
 
+  def pdf2meta(v: String = "latest.release") = "edu.umass.cs.iesl" %% "pdf2meta" % v
+
   def pdfbox(v: String = "latest.release") = "org.apache.pdfbox" % "pdfbox" % v exclude("commons-logging", "commons-logging")
 
   def dsutils(v: String = "latest.release") = "com.davidsoergel" % "dsutils" % v exclude("commons-logging", "commons-logging")
@@ -217,6 +219,10 @@ object Dependencies {
   def scalatest(v: String = "latest.release") = "org.scalatest" %% "scalatest" % v % "test"
 
   def jettyWebApp(v: String = "latest.release") = "org.eclipse.jetty" % "jetty-webapp" % v % "container"
+
+  def jettyContainer(v: String = "latest.release") =  "org.mortbay.jetty" % "jetty" % v % "container"
+
+  def jetty(v: String = "latest.release") = "org.mortbay.jetty" % "jetty" % v
 
   def logbackClassic(v: String = "latest.release") = "ch.qos.logback" % "logback-classic" % v
 
