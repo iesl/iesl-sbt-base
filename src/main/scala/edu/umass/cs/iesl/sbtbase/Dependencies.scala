@@ -16,6 +16,8 @@ object Dependencies {
 
   def commonsCompress(v: String = "latest.release") = "org.apache.commons" % "commons-compress" % v
 
+  def commonsLang(v: String = "latest.release") = "commons-lang" % "commons-lang" % v
+
   def langdetect(v: String = "latest.release") = "com.cybozu.labs" % "langdetect" % v
 
   def scalaCompiler(v: String = scalaV) = "org.scala-lang" % "scala-compiler" % v
