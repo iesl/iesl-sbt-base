@@ -8,7 +8,7 @@ object Dependencies {
   implicit def enrichModuleID(m: ModuleID) = new RichModuleID(m)
 
   class RichModuleID(m: ModuleID) {
-    def excludeLoggers: ModuleID = m exclude("commons-logging", "commons-logging") exclude("ch.qos.logback", "logback-classic") exclude("ch.qos.logback", "logback-core") exclude("log4j", "log4j")
+    def excludeLoggers(): ModuleID = m exclude("commons-logging", "commons-logging") exclude("ch.qos.logback", "logback-classic") exclude("ch.qos.logback", "logback-core") exclude("log4j", "log4j")
   }
 
 
