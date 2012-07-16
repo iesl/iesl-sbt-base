@@ -32,6 +32,7 @@ object IeslProject {
       .settings(scalaSettings: _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
       .settings(getJarsTask)
+      .settings(versionReportTask)
       .settings(
       organization := iesl,
       version := vers,
@@ -67,8 +68,40 @@ object IeslProject {
 
   val getJars = TaskKey[Unit]("get-jars")
 
-  val getJarsTask = getJars <<= (target, fullClasspath in Runtime) map { (target, cp) =>
-    println("Target path is: "+target)
-    println("Full classpath is: "+cp.map(_.data).mkString(":"))
+  val getJarsTask = getJars <<= (target, fullClasspath in Runtime) map {
+    (target, cp) =>
+      println("Target path is: " + target)
+      println("Full classpath is: " + cp.map(_.data).mkString(":"))
   }
+
+  lazy val versionReport = TaskKey[String]("version-report")
+
+  // Add this setting to your project.
+  val versionReportTask = versionReport <<= (externalDependencyClasspath in Compile, streams) map {
+    (cp: Seq[Attributed[File]], streams) =>
+      val report = cp.map {
+        attributed =>
+          attributed.get(Keys.moduleID.key) match {
+            case Some(moduleId) => "%40s %20s %10s %10s".format(
+              moduleId.organization,
+              moduleId.name,
+              moduleId.revision,
+              moduleId.configurations.getOrElse("")
+            )
+            case None =>
+              // unmanaged JAR, just
+              attributed.data.getAbsolutePath
+          }
+      }.mkString("\n")
+      streams.log.info(report)
+      report
+  }
+
+  implicit def enrichProject(p: Project)(implicit allDeps: Dependencies): IeslProject = new IeslProject(p, allDeps)
+
+}
+
+class IeslProject(p: Project, allDeps: Dependencies) {
+  def cleanLogging = p.settings(CleanLogging.cleanLogging)
+  def standardLogging = p.settings(libraryDependencies ++= new CleanLogging(allDeps).standardLogging)
 }

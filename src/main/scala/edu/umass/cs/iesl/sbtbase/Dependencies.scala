@@ -15,7 +15,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
     def applyGlobal(): ModuleID = globalModuleFilter(m)
   }
 
-  def standardLogging = new CleanLogging(this).standardLogging
+  //def standardLogging = new CleanLogging(this).standardLogging
 
   def jsonic(v: String = "latest.release") = "net.arnx" % "jsonic" % v applyGlobal()
 
