@@ -117,7 +117,7 @@ object IeslProject {
       } catch {
         case e: IOException => None
       }
-      val storedVersions: Map[String, String] = storedFile.map(_.getLines().map(_.trim).filter(!_.startsWith("#")).filter(!_.isEmpty).map(_.split("\t")).map(a => (a(0), a(1))).toMap.withDefaultValue("(none)")).getOrElse(Map.empty)
+      val storedVersions: Map[String, String] = storedFile.map(_.getLines().map(_.trim).filter(!_.startsWith("#")).filter(!_.isEmpty).map(_.split("\t")).map(a => (a(0), a(1))).toMap).getOrElse(Map.empty[String,String]).withDefaultValue("(none)")
 
       val allDeps = newVersions.keySet ++ storedVersions.keySet
 
