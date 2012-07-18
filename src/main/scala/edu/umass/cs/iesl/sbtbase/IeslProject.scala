@@ -34,7 +34,7 @@ object IeslProject {
       .settings(scalaSettings: _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
       .settings(getJarsTask)
-      .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask, updateWithVersionReport)
+      .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask) //, updateWithVersionReport)
       .settings(
       organization := iesl,
       version := vers,
@@ -157,11 +157,12 @@ object IeslProject {
     }
   }
 
+  /*
   val updateWithVersionReport = update <<= (update, externalDependencyClasspath in Compile, baseDirectory, streams) map {
     (u, cp: Seq[Attributed[File]], baseDir, streams) => {
       val result = u; doVersionUpdateReport(cp,baseDir,streams); result
     }
-  }
+  }*/
 
   implicit def enrichProject(p: Project)(implicit allDeps: Dependencies): IeslProject = new IeslProject(p, allDeps)
 
