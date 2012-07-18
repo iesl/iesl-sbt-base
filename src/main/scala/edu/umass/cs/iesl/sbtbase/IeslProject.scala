@@ -4,6 +4,8 @@ import sbt._
 import sbt.Keys._
 import scala.Some
 import Config._
+import io.Source
+import java.io.{FileWriter, BufferedWriter}
 
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
@@ -82,7 +84,7 @@ object IeslProject {
       val report = cp.map {
         attributed =>
           attributed.get(Keys.moduleID.key) match {
-            case Some(moduleId) => "%40s %20s %10s %10s".format(
+            case Some(moduleId) => "%30s %30s %12s %8".format(
               moduleId.organization,
               moduleId.name,
               moduleId.revision,
@@ -97,11 +99,66 @@ object IeslProject {
       report
   }
 
+  lazy val versionUpdateReport = TaskKey[Unit]("version-update-report")
+
+  val versionUpdateReportTask = versionUpdateReport <<= (externalDependencyClasspath in Compile, baseDirectory, streams) map {
+    (cp: Seq[Attributed[File]], baseDir, streams) => {
+      val newVersions = cp.map {
+        m =>
+          m.get(Keys.moduleID.key) match {
+            case Some(moduleId) => Some((moduleId.organization + ":" + moduleId.name, moduleId.revision))
+
+            case None => None
+          }
+      }.flatten.toMap.withDefaultValue("(none)")
+
+      val storedVersions: Map[String, String] = Source.fromFile(baseDir + java.io.File.separator + "dependency-versions").getLines().filter(_.startsWith("#")).map(_.split("\t")).map(a => (a(0), a(1))).toMap.withDefaultValue("(none)")
+
+      val allDeps = newVersions.keySet ++ storedVersions.keySet
+
+      val diffs = allDeps.map(k => (k, (storedVersions.apply(k), newVersions(k)))).filter(p => (p._2._1 != p._2._2))
+
+      if (diffs.isEmpty) {
+        streams.log.info("Dependency versions are up to date")
+      }
+      else {
+        streams.log.warn("Dependency versions have changed:")
+        for (d <- diffs) {
+          streams.log.warn("%40s : %14s => %14s")
+        }
+        streams.log.warn("Use 'accept-versions' to accept new")
+      }
+    }
+  }
+
+  lazy val acceptVersions = TaskKey[Unit]("accept-versions")
+
+  val acceptVersionsTask = acceptVersions <<= (externalDependencyClasspath in Compile, baseDirectory, streams) map {
+    (cp: Seq[Attributed[File]], baseDir, streams) => {
+      val writer: BufferedWriter = new BufferedWriter(new FileWriter(baseDir + java.io.File.separator + "dependency-versions"))
+      writer.write("# automatically maintained; use 'sbt version-update-report' and 'sbt accept-versions'\n")
+
+      cp.map {
+        m =>
+          m.get(Keys.moduleID.key) match {
+            case Some(moduleId) => writer.write(moduleId.organization + ":" + moduleId.name + "\t" + moduleId.revision + "\n")
+
+            case None => None
+          }
+      }
+
+      writer.close()
+      streams.log.info("Wrote updated dependency-versions file.")
+    }
+  }
+
+
   implicit def enrichProject(p: Project)(implicit allDeps: Dependencies): IeslProject = new IeslProject(p, allDeps)
 
 }
 
 class IeslProject(p: Project, allDeps: Dependencies) {
   def cleanLogging = p.settings(CleanLogging.cleanLogging)
+
   def standardLogging = p.settings(libraryDependencies ++= new CleanLogging(allDeps).standardLogging)
 }

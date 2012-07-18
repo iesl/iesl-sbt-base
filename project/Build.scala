@@ -5,7 +5,7 @@ object IeslSbtBaseBuild extends Build {
 
   val iesl = "edu.umass.cs.iesl"
   val scalaV = "2.9.1"
-  val vers = "10"
+  val vers = "11"
 
   lazy val ieslSbtBase =
     Project("iesl-sbt-base", file("."))
