@@ -34,7 +34,7 @@ object IeslProject {
       .settings(scalaSettings: _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
       .settings(getJarsTask)
-      .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask)
+      .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask, updateWithVersionReport)
       .settings(
       organization := iesl,
       version := vers,
@@ -101,38 +101,38 @@ object IeslProject {
 
   val versionUpdateReport = TaskKey[Unit]("version-update-report")
 
-  val versionUpdateReportTask = versionUpdateReport <<= (externalDependencyClasspath in Compile, baseDirectory, streams) map {
-    (cp: Seq[Attributed[File]], baseDir, streams) => {
-      val newVersions = cp.map {
-        m =>
-          m.get(Keys.moduleID.key) match {
-            case Some(moduleId) => Some((moduleId.organization + ":" + moduleId.name, moduleId.revision))
+  val versionUpdateReportTask = versionUpdateReport <<= (externalDependencyClasspath in Compile, baseDirectory, streams) map doVersionUpdateReport
 
-            case None => None
-          }
-      }.flatten.toMap.withDefaultValue("(none)")
+  val doVersionUpdateReport: (Seq[Attributed[sbt.File]], Types.Id[File], Types.Id[Keys.TaskStreams]) => Unit = (cp: Seq[Attributed[File]], baseDir, streams) => {
+    val newVersions = cp.map {
+      m =>
+        m.get(Keys.moduleID.key) match {
+          case Some(moduleId) => Some((moduleId.organization + ":" + moduleId.name, moduleId.revision))
 
-      val storedFile: Option[BufferedSource] = try {
-        Some(Source.fromFile(baseDir + java.io.File.separator + "dependency-versions"))
-      } catch {
-        case e: IOException => None
-      }
-      val storedVersions: Map[String, String] = storedFile.map(_.getLines().map(_.trim).filter(!_.startsWith("#")).filter(!_.isEmpty).map(_.split("\t")).map(a => (a(0), a(1))).toMap).getOrElse(Map.empty[String,String]).withDefaultValue("(none)")
-
-      val allDeps = newVersions.keySet ++ storedVersions.keySet
-
-      val diffs = allDeps.map(k => (k, (storedVersions.apply(k), newVersions(k)))).filter(p => (p._2._1 != p._2._2))
-
-      if (diffs.isEmpty) {
-        streams.log.info("Dependency versions are up to date.")
-      }
-      else {
-        streams.log.warn("Dependency versions have changed:")
-        for (d <- diffs) {
-          streams.log.warn("%40s : %14s => %14s")
+          case None => None
         }
-        streams.log.warn("Use 'accept-versions' to accept new versions.")
+    }.flatten.toMap.withDefaultValue("(none)")
+
+    val storedFile: Option[BufferedSource] = try {
+      Some(Source.fromFile(baseDir + java.io.File.separator + "dependency-versions"))
+    } catch {
+      case e: IOException => None
+    }
+    val storedVersions: Map[String, String] = storedFile.map(_.getLines().map(_.trim).filter(!_.startsWith("#")).filter(!_.isEmpty).map(_.split("\t")).map(a => (a(0), a(1))).toMap).getOrElse(Map.empty[String, String]).withDefaultValue("(none)")
+
+    val allDeps = newVersions.keySet ++ storedVersions.keySet
+
+    val diffs = allDeps.map(k => (k, (storedVersions.apply(k), newVersions(k)))).filter(p => (p._2._1 != p._2._2))
+
+    if (diffs.isEmpty) {
+      streams.log.info("Dependency versions are up to date.")
+    }
+    else {
+      streams.log.warn("Dependency versions have changed:")
+      for (d <- diffs) {
+        streams.log.warn("%40s : %14s => %14s".format(d._1, d._2._1, d._2._2))
       }
+      streams.log.warn("Use 'accept-versions' to accept new versions.")
     }
   }
 
@@ -157,6 +157,11 @@ object IeslProject {
     }
   }
 
+  val updateWithVersionReport = update <<= (update, externalDependencyClasspath in Compile, baseDirectory, streams) map {
+    (u, cp: Seq[Attributed[File]], baseDir, streams) => {
+      val result = u; doVersionUpdateReport(cp,baseDir,streams); result
+    }
+  }
 
   implicit def enrichProject(p: Project)(implicit allDeps: Dependencies): IeslProject = new IeslProject(p, allDeps)
 
