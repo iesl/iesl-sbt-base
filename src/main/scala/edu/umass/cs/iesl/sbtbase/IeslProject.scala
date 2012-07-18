@@ -4,8 +4,8 @@ import sbt._
 import sbt.Keys._
 import scala.Some
 import Config._
-import io.Source
-import java.io.{FileWriter, BufferedWriter}
+import io.{BufferedSource, Source}
+import java.io.{IOException, FileWriter, BufferedWriter}
 
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
@@ -34,7 +34,7 @@ object IeslProject {
       .settings(scalaSettings: _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
       .settings(getJarsTask)
-      .settings(versionReportTask)
+      .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask)
       .settings(
       organization := iesl,
       version := vers,
@@ -76,7 +76,7 @@ object IeslProject {
       println("Full classpath is: " + cp.map(_.data).mkString(":"))
   }
 
-  lazy val versionReport = TaskKey[String]("version-report")
+  val versionReport = TaskKey[String]("version-report")
 
   // Add this setting to your project.
   val versionReportTask = versionReport <<= (externalDependencyClasspath in Compile, streams) map {
@@ -99,7 +99,7 @@ object IeslProject {
       report
   }
 
-  lazy val versionUpdateReport = TaskKey[Unit]("version-update-report")
+  val versionUpdateReport = TaskKey[Unit]("version-update-report")
 
   val versionUpdateReportTask = versionUpdateReport <<= (externalDependencyClasspath in Compile, baseDirectory, streams) map {
     (cp: Seq[Attributed[File]], baseDir, streams) => {
@@ -112,21 +112,26 @@ object IeslProject {
           }
       }.flatten.toMap.withDefaultValue("(none)")
 
-      val storedVersions: Map[String, String] = Source.fromFile(baseDir + java.io.File.separator + "dependency-versions").getLines().filter(_.startsWith("#")).map(_.split("\t")).map(a => (a(0), a(1))).toMap.withDefaultValue("(none)")
+      val storedFile: Option[BufferedSource] = try {
+        Some(Source.fromFile(baseDir + java.io.File.separator + "dependency-versions"))
+      } catch {
+        case e: IOException => None
+      }
+      val storedVersions: Map[String, String] = storedFile.map(_.getLines().map(_.trim).filter(!_.startsWith("#")).filter(!_.isEmpty).map(_.split("\t")).map(a => (a(0), a(1))).toMap.withDefaultValue("(none)")).getOrElse(Map.empty)
 
       val allDeps = newVersions.keySet ++ storedVersions.keySet
 
       val diffs = allDeps.map(k => (k, (storedVersions.apply(k), newVersions(k)))).filter(p => (p._2._1 != p._2._2))
 
       if (diffs.isEmpty) {
-        streams.log.info("Dependency versions are up to date")
+        streams.log.info("Dependency versions are up to date.")
       }
       else {
         streams.log.warn("Dependency versions have changed:")
         for (d <- diffs) {
           streams.log.warn("%40s : %14s => %14s")
         }
-        streams.log.warn("Use 'accept-versions' to accept new")
+        streams.log.warn("Use 'accept-versions' to accept new versions.")
       }
     }
   }
