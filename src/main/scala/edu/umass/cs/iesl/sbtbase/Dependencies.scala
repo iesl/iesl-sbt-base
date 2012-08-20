@@ -39,6 +39,8 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def ieslScalaCommons(v: String = "latest.release") = "edu.umass.cs.iesl" %% "scalacommons" % v notTransitive() applyGlobal()//  exclude("com.davidsoergel", "dsutils")
 
+  def namejuggler(v: String = "latest.release") = "edu.umass.cs.iesl" %% "namejuggler" % v applyGlobal()
+
   def bibmogrify(v: String = "latest.release") = "edu.umass.cs.iesl" %% "bibmogrify" % v applyGlobal()
 
   def pdf2meta(v: String = "latest.release") = "edu.umass.cs.iesl" %% "pdf2meta" % v applyGlobal()
