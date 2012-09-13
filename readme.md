@@ -1,3 +1,6 @@
+iesl-sbt-base
+=============
+
 _Finally, SBT is simple._
 
 iesl-sbt-base is an [SBT](https://github.com/harrah/xsbt/wiki) plugin that provides a pile of boilerplate, so that the `Build.scala` file for your project can be trivially short.  It provides:
@@ -31,7 +34,7 @@ This is a complete, functional Build.scala using iesl-sbt-base:
 Installation
 ============
 
-The easiest way to start using iesl-sbt-base for a new project is to grab the template project [here](), or equivalently check out the repository and copy `/src/template`.  Then modify the `project/Build.scala` you find there.
+The easiest way to start using iesl-sbt-base for a new project is to grab the template project [here](https://dev-iesl.cs.umass.edu/jenkins/job/iesl-sbt-base/lastSuccessfulBuild/artifact/target/iesl-sbt-base-template.tgz), or equivalently check out the repository and copy `/src/template`.  Then modify the `project/Build.scala` you find there.
 
 The main point of the template is that it loads the iesl-sbt-plugin from our Maven repository (in `project/project/Plugins.scala`).  It also provides a standard and fairly complete `.hgignore` file, as well as a stub `logback.xml` logging configuration (see below).
 
