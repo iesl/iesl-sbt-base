@@ -1,11 +1,29 @@
 import sbt._
 import sbt.Keys._
+import java.io.File
 
 object IeslSbtBaseBuild extends Build {
 
   val iesl = "edu.umass.cs.iesl"
   val scalaV = "2.9.1"
-  val vers = "21"
+  val vers = "22-SNAPSHOT"
+
+  val packageTemplate = TaskKey[File]("package-template")
+
+  val packageTemplateTask = packageTemplate <<= (target, sourceDirectory) map {
+    (target, sourceDirectory) =>
+      import sys.process._
+      val templatePackageFilename = target + "/iesl-sbt-base-template.tgz"
+      val tarCommand = "tar cvzf " + templatePackageFilename + " iesl-sbt-base-template"
+      println(tarCommand)
+      val result = Process(tarCommand,sourceDirectory).!!
+
+      println(result)
+      println("Built: " + templatePackageFilename)
+      new File(templatePackageFilename)
+  }
+
+  val templateArtifact = addArtifact(Artifact("template", "tgz", "tgz"), packageTemplate)
 
   lazy val ieslSbtBase =
     Project("iesl-sbt-base", file("."))
@@ -15,7 +33,7 @@ object IeslSbtBaseBuild extends Build {
       version := vers,
       scalaVersion := scalaV,
       publishToIesl(vers),
-      creds)
+      creds).settings(packageTemplateTask.settings: _*).settings(templateArtifact.settings: _*)
 
   def publishToIesl(vers: String) = publishTo := {
     def repo(name: String) = name at "https://dev-iesl.cs.umass.edu/nexus/content/repositories/" + name
