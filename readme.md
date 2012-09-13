@@ -144,3 +144,7 @@ To avoid any ambiguity about which configuration file is loaded, and to make log
       def hello = logger.debug("Hello World")
       }
 
+Questions and feedback
+======================
+
+Please contact David Soergel <soergel@cs.umass.edu>.
