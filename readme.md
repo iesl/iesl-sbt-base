@@ -34,7 +34,7 @@ This is a complete, functional Build.scala using iesl-sbt-base:
 Installation
 ============
 
-The easiest way to start using iesl-sbt-base for a new project is to grab the template project [here](https://dev-iesl.cs.umass.edu/jenkins/job/iesl-sbt-base/lastSuccessfulBuild/artifact/target/iesl-sbt-base-template.tgz), or equivalently check out the repository and copy `/src/template`.  Then modify the `project/Build.scala` you find there.
+The easiest way to start using iesl-sbt-base for a new project is to grab the template project [here](https://dev-iesl.cs.umass.edu/jenkins/job/iesl-sbt-base/lastSuccessfulBuild/artifact/target/iesl-sbt-base-template.tgz), or equivalently check out the repository and copy `/src/iesl-sbt-base-template`.  Then modify the `project/Build.scala` you find there.
 
 The main point of the template is that it loads the iesl-sbt-plugin from our Maven repository (in `project/project/Plugins.scala`).  It also provides a standard and fairly complete `.hgignore` file, as well as a stub `logback.xml` logging configuration (see below).
 
@@ -101,7 +101,7 @@ In principle `sbt update` should obtain the latest releases of upstream dependen
 Using or prohibiting SNAPSHOT versions
 --------------------------------------
 
-By default, iesl-sbt-base does not configure resolvers for our snapshot repositories.  It is more robust to develop against release versions of dependencies if at all possible; simply refusing to download artifacts from snapshot repositories is a nice centralized way to enforce this principle.  If you do need snapshot dependencies, simply set as the optional fifth argument to `IeslProject` to enable the resolvers:
+By default, iesl-sbt-base does not configure resolvers for our snapshot repositories.  It is more robust to develop against release versions of dependencies if at all possible; simply refusing to download artifacts from snapshot repositories is a nice centralized way to enforce this principle.  If you do need snapshot dependencies, simply set the optional fifth argument to `IeslProject` to enable the resolvers:
 
     lazy val foobar = IeslProject("foobar", version, deps, Public, WithSnapshotDependencies)
 
