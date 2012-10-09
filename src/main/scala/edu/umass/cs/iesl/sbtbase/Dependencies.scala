@@ -53,7 +53,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def grizzledSlf4j(v: String = "latest.release") = "org.clapper" %% "grizzled-slf4j" % v applyGlobal()
 
-  def slf4s(v: String = "latest.release") = "com.weiglewilczek.slf4s" %% "slf4s" % v applyGlobal() //"slf4s_2.9.1"
+  def slf4s(v: String = "latest.release") = "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % v applyGlobal() //"slf4s_2.9.1"
 
   def scalaIoCore(v: String = "latest.release") = "com.github.scala-incubator.io" %% "scala-io-core" % v applyGlobal()
 
