@@ -59,6 +59,8 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def scalaIoFile(v: String = "latest.release") = "com.github.scala-incubator.io" %% "scala-io-file" % v applyGlobal()
 
+  def typesafeConfig(v: String = "latest.release") = "com.typesafe" % "config" % v applyGlobal()
+
   def akkaActor(v: String = "latest.release") = "se.scalablesolutions.akka" % "akka-actor" % v applyGlobal()
 
   def akkaSlf4j(v: String = "latest.release") = "se.scalablesolutions.akka" % "akka-slf4j" % v applyGlobal()
