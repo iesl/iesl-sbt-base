@@ -53,7 +53,7 @@ object IeslProject {
       creds)
 
   def publishToIesl(vers: String, repotype: RepoType) = publishTo := {
-    def repo(name: String) = name at nexusUrl + "/content/repositories/" + name
+    def repo(name: String) = name at nexusHttpsUrl + "/content/repositories/" + name
     val isSnapshot = vers.endsWith("SNAPSHOT")
     val isPrivate = if (repotype == Private) "private-" else ""
     val repoName = isPrivate + (if (isSnapshot) "snapshots" else "releases")
@@ -71,7 +71,7 @@ object IeslProject {
 
   val scalaSettings = Seq(
     scalaVersion := scalaV,
-    scalacOptions := Seq("-deprecation", "-unchecked", "-Xcheckinit", "-encoding", "utf8"),
+    scalacOptions := Seq("-Xlint", "-deprecation", "-unchecked", "-Xcheckinit", "-encoding", "utf8"),
     javacOptions ++= Seq("-Xlint:unchecked", "-encoding", "utf8")
   )
 

@@ -6,7 +6,7 @@ object IeslSbtBaseBuild extends Build {
 
   val iesl = "edu.umass.cs.iesl"
   val scalaV = "2.9.2"
-  val vers = "25"
+  val vers = "26"
 
   val packageTemplate = TaskKey[File]("package-template")
 
@@ -31,8 +31,8 @@ object IeslSbtBaseBuild extends Build {
       sbtPlugin := true,
       organization := iesl,
       version := vers,
-      scalaVersion := scalaV, 
-     publishToIesl(vers),
+      scalaVersion := scalaV,
+      publishToIesl(vers),
       creds).settings(packageTemplateTask.settings: _*).settings(templateArtifact.settings: _*)
 
   def publishToIesl(vers: String) = publishTo := {

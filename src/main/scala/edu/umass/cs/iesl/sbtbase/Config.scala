@@ -15,7 +15,8 @@ object Config {
   // any needed 3rd-party repositories should by proxied in Nexus and added to the public group, so their artifacts will be available here automatically.
   // Release and Snapshot repos are separated, to allow easily insuring that no snapshot dependencies exist (by default, in fact)
 
-  val nexusUrl = "https://dev-iesl.cs.umass.edu/nexus"
+  val nexusUrl = "http://dev-iesl.cs.umass.edu/nexus"
+  val nexusHttpsUrl = "https://dev-iesl.cs.umass.edu/nexus"
 
   val IESLReleaseRepos = Seq(
     "IESL Public Releases" at  nexusUrl + "/content/groups/public",
