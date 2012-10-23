@@ -36,21 +36,11 @@ object IeslProject {
 
   case object Private extends RepoType
 
-
+/*
   def apply(id: String, vers: String, deps: Seq[ModuleID],
-            repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies): Project =
-    Project(id, file("."))
-      .settings(scalaSettings: _*)
-      .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
-      .settings(getJarsTask)
-      .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask, fixPom, allExternalDependencyClasspathTask) //, updateWithVersionReport)
-      .settings(
-      organization := iesl,
-      version := vers,
-      scalaVersion := scalaV,
-      libraryDependencies ++= deps,
-      publishToIesl(vers, repotype),
-      creds)
+            repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, path: String = ".", org: String = iesl, conflict: ConflictStrategy = ConflictStrict): Project =
+    Project(id, file(path)).ieslSetup(vers, deps, repotype, allowSnapshots,org,conflict)
+*/
 
   def publishToIesl(vers: String, repotype: RepoType) = publishTo := {
     def repo(name: String) = name at nexusHttpsUrl + "/content/repositories/" + name
@@ -245,10 +235,45 @@ object IeslProject {
   }
 
 
+  sealed class ConflictStrategy(s: String)
+
+  case object ConflictAll extends ConflictStrategy("all")
+
+  case object ConflictLatestTime extends ConflictStrategy("latest-time")
+
+  case object ConflictLatestRevision extends ConflictStrategy("latest-revision")
+
+  case object ConflictLatestCompatible extends ConflictStrategy("latest-compatible")
+
+  case object ConflictStrict extends ConflictStrategy("strict")
+
+  def setConflictStrategy(c: ConflictStrategy) = ivyXML :=
+    <dependencies>
+      <conflict>c.s</conflict>
+    </dependencies>
 }
 
 class IeslProject(p: Project, allDeps: Dependencies) {
   def cleanLogging = p.settings(CleanLogging.cleanLogging)
 
   def standardLogging = p.settings(libraryDependencies ++= new CleanLogging(allDeps).standardLogging)
+
+  import IeslProject._
+
+  def ieslSetup(vers: String, deps: Seq[ModuleID],
+                repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, org: String = iesl, conflict: ConflictStrategy = ConflictStrict): Project =
+    p.settings(scalaSettings: _*)
+      .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
+      .settings(getJarsTask)
+      .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask, fixPom, allExternalDependencyClasspathTask) //, updateWithVersionReport)
+      .settings(
+      organization := org,
+      version := vers,
+      scalaVersion := scalaV,
+      libraryDependencies ++= deps,
+      publishToIesl(vers, repotype),
+      creds)
+      .settings(setConflictStrategy(conflict))
+
+
 }
