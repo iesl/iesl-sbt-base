@@ -162,6 +162,8 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def scalazCore(v: String = "latest.release") = "org.scalaz" %% "scalaz-core" % v applyGlobal()
 
+  def scalazTypelevel(v: String = "latest.release") = "org.scalaz" %% "scalaz-typelevel" % v applyGlobal()
+
   def scalaQuery(v: String = "latest.release") = "org.scalaquery" %% "scalaquery" % v applyGlobal()
 
   def selenium(v: String = "latest.release") = "org.seleniumhq.selenium" % "selenium-java" % v applyGlobal()
@@ -228,6 +230,8 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
     }
   }
 
+  // explicit version required to fix a bug in apache camel spring module
+  def jaxbImpl(v: String = "2.2.6") = "com.sun.xml.bind" % "jaxb-impl" % v applyGlobal()
 
   def junit4(v: String = "latest.release") = "junit" % "junit" % v % "test" applyGlobal()
 
