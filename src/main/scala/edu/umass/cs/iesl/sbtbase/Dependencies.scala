@@ -254,5 +254,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
   def servletApi(v: String = "latest.release") = "javax.servlet" % "servlet-api" % v % "provided" applyGlobal()
 
   def jodatime(v: String = "latest.release") = "joda-time" % "joda-time" % v applyGlobal()
+  
+  def scalatime(v: String = "latest.release") = "org.scalaj" %% "scalaj-time" % v applyGlobal()
 
 }
