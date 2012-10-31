@@ -200,7 +200,9 @@ object IeslProject {
 
     def replaceVersion(n: XNode, v: String) = n match {
       case Elem(prefix, label, attribs, scope, child@_*) =>
-        Elem(prefix, label, attribs, scope, child.filter(_.label != "version") ++ <version>{v}</version>: _*)
+        Elem(prefix, label, attribs, scope, child.filter(_.label != "version") ++ <version>
+          {v}
+        </version>: _ *)
       case _ => sys.error("Can only add children to elements!")
     }
 
@@ -256,19 +258,19 @@ object IeslProject {
 
   def substituteLocalProjects(deps: Seq[ModuleID]): (Seq[RootProject], Seq[ModuleID]) = {
 
-    val local = sys.props("localModules")
+    val localOpt = Option(sys.props("localModules"))
+    localOpt.map(local => {
+      val localProjects = local.split(";").map(s => {
+        val splitOnEquals(moduleId, path) = s.trim
+        //(moduleId, new RootProject(file(path)))
+        (moduleId.trim, new RootProject(uri(path.trim)))
+      }).toMap
 
-    val localProjects = local.split(";").map(s => {
-      val splitOnEquals(moduleId, path) = s.trim
-      //(moduleId, new RootProject(file(path)))
-      (moduleId.trim, new RootProject(uri(path.trim)))
-    }).toMap
+      val (l, r) = deps.partition(p => localProjects.contains(p.organization + ":" + p.name))
 
-    val (l, r) = deps.partition(p => localProjects.contains(p.organization + ":" + p.name))
-
-    val lProjects = l.map(p => localProjects(p.organization + ":" + p.name))
-    (lProjects, r)
-
+      val lProjects = l.map(p => localProjects(p.organization + ":" + p.name))
+      (lProjects, r)
+    }).getOrElse(Seq.empty, deps)
   }
 
 }
