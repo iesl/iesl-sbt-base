@@ -36,11 +36,11 @@ object IeslProject {
 
   case object Private extends RepoType
 
-/*
-  def apply(id: String, vers: String, deps: Seq[ModuleID],
-            repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, path: String = ".", org: String = iesl, conflict: ConflictStrategy = ConflictStrict): Project =
-    Project(id, file(path)).ieslSetup(vers, deps, repotype, allowSnapshots,org,conflict)
-*/
+  /*
+    def apply(id: String, vers: String, deps: Seq[ModuleID],
+              repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, path: String = ".", org: String = iesl, conflict: ConflictStrategy = ConflictStrict): Project =
+      Project(id, file(path)).ieslSetup(vers, deps, repotype, allowSnapshots,org,conflict)
+  */
 
   def publishToIesl(vers: String, repotype: RepoType) = publishTo := {
     def repo(name: String) = name at nexusHttpsUrl + "/content/repositories/" + name
@@ -251,6 +251,26 @@ object IeslProject {
     <dependencies>
       <conflict>c.s</conflict>
     </dependencies>
+
+  val splitOnEquals = "(.*)=(.*)".r
+
+  def substituteLocalProjects(deps: Seq[ModuleID]): (Seq[RootProject], Seq[ModuleID]) = {
+
+    val local = sys.props("localModules")
+
+    val localProjects = local.split(";").map(s => {
+      val splitOnEquals(moduleId, path) = s.trim
+      //(moduleId, new RootProject(file(path)))
+      (moduleId.trim, new RootProject(uri(path.trim)))
+    }).toMap
+
+    val (l, r) = deps.partition(p => localProjects.contains(p.organization + ":" + p.name))
+
+    val lProjects = l.map(p => localProjects(p.organization + ":" + p.name))
+    (lProjects, r)
+
+  }
+
 }
 
 class IeslProject(p: Project, allDeps: Dependencies) {
@@ -260,9 +280,13 @@ class IeslProject(p: Project, allDeps: Dependencies) {
 
   import IeslProject._
 
+
   def ieslSetup(vers: String, deps: Seq[ModuleID],
-                repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, org: String = iesl, conflict: ConflictStrategy = ConflictStrict): Project =
-    p.settings(scalaSettings: _*)
+                repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, org: String = iesl, conflict: ConflictStrategy = ConflictStrict): Project = {
+
+    val (localDeps: Seq[Project], remoteDeps: Seq[ModuleID]) = substituteLocalProjects(deps)
+
+    val result = p.settings(scalaSettings: _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
       .settings(getJarsTask)
       .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask, fixPom, allExternalDependencyClasspathTask) //, updateWithVersionReport)
@@ -270,10 +294,12 @@ class IeslProject(p: Project, allDeps: Dependencies) {
       organization := org,
       version := vers,
       scalaVersion := scalaV,
-      libraryDependencies ++= deps,
+      libraryDependencies ++= remoteDeps,
       publishToIesl(vers, repotype),
       creds)
       .settings(setConflictStrategy(conflict))
 
+    localDeps.foldLeft(result)((b, a) => b.dependsOn(a))
+  }
 
 }
