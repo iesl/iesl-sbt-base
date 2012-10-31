@@ -143,6 +143,15 @@ To avoid any ambiguity about which configuration file is loaded, and to make log
     object Hello extends Logging {
       def hello = logger.debug("Hello World")
       }
+      
+Substituting local dependencies for remote ones
+===============================================
+
+Sometimes it can be useful to reference a local project directory for some external dependency, instead of referring to it as a jar using the usual Ivy mechanism.  To perform such a substitution, use the following system property when running sbt:
+
+    -DlocalModules=com.foobar:baz=/path/to/com.foobar/baz
+
+(In this case the requested version number (and/or SNAPSHOT status) of the com.foobar:baz module will be ignored.)
 
 Questions and feedback
 ======================
