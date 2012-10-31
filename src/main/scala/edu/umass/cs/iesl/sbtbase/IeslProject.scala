@@ -286,7 +286,7 @@ class IeslProject(p: Project, allDeps: Dependencies) {
   def ieslSetup(vers: String, deps: Seq[ModuleID],
                 repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, org: String = iesl, conflict: ConflictStrategy = ConflictStrict): Project = {
 
-    val (localDeps: Seq[Project], remoteDeps: Seq[ModuleID]) = substituteLocalProjects(deps)
+    val (localDeps: Seq[RootProject], remoteDeps: Seq[ModuleID]) = substituteLocalProjects(deps)
 
     val result = p.settings(scalaSettings: _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
