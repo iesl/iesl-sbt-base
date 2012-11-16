@@ -25,12 +25,11 @@ object CleanLogging {
     //  .excludeAll(new ExclusionRule(name = "*slf4j*"))
   */
 
-  // This is a setting to apply to a project
 
   val cleanLogging = ivyXML :=
     <dependencies>
       <exclude module="log4j"/>
-      <exclude module="slf4j-log4j12"/>
+      <exclude module="slf4j*"/>
       <exclude module="commons-logging"/>
     </dependencies>
 }
