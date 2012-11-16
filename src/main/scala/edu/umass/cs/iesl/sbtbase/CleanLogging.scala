@@ -28,11 +28,9 @@ object CleanLogging {
 
   val cleanLogging = ivyXML :=
     <dependencies>
-      <exclude name="log4j.*" pattern="regexp"/>
-      <exclude name="slf4j.*" pattern="regexp"/>
-      <exclude name="slf4s.*" pattern="regexp"/>
-      <exclude name="logback.*" pattern="regexp"/>
-      <exclude name="commons-logging.*" pattern="regexp"/>
+      <exclude module="log4j"/>
+      <exclude module="slf4j-log4j12"/>
+      <exclude module="commons-logging"/>
     </dependencies>
 }
 
