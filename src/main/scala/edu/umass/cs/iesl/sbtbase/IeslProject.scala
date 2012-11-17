@@ -278,6 +278,7 @@ object IeslProject {
 class IeslProject(p: Project, allDeps: Dependencies) {
   def cleanLogging = p.settings(CleanLogging.cleanLogging)
 
+  val standardLogging = standardLogging()
   def standardLogging(slf4jVersion:String="latest.release") = p.settings(libraryDependencies ++= new CleanLogging(allDeps).standardLogging(slf4jVersion))
 
   import IeslProject._
