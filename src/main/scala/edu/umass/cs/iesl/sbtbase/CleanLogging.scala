@@ -38,7 +38,7 @@ class CleanLogging(deps: Dependencies) {
 
   import deps._
 
-  val standardLogging = Seq(
+  def standardLogging(slf4jVersion:String="latest.release") = Seq(
     // see http://www.slf4j.org/legacy.html
 
     // ultimately log everything via Logback
@@ -47,22 +47,22 @@ class CleanLogging(deps: Dependencies) {
     logbackClassic(),
 
     // use the slf4j wrapper API
-    slf4j(),
+    slf4j(slf4jVersion),
 
     // nice Scala syntax for slf4j
     slf4s(),
 
     // direct legacy Jakarta Commons Logging calls to slf4j
-    jclOverSlf4j(),
+    jclOverSlf4j(slf4jVersion),
 
     // direct legacy log4j calls to slf4j
-    log4jOverSlf4j(),
+    log4jOverSlf4j(slf4jVersion),
 
     // direct legacy java.util.logging calls to slf4j
-    julToSlf4j(),
+    julToSlf4j(slf4jVersion),
 
     // direct grizzled-slf4j calls to slf4j
-    grizzledSlf4j()
+    grizzledSlf4j(slf4jVersion)
   )
 
 }
