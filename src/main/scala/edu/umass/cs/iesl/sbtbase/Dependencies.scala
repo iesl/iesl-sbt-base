@@ -237,7 +237,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def specs2(v: String = "latest.release") = "org.specs2" %% "specs2" % v % "test" applyGlobal()
 
-  def scalacheck(v: String = "latest.release") = "org.scala-tools.testing" %% "scalacheck" % v % "test" applyGlobal()
+  def scalacheck(v: String = "latest.release") = "org.scalacheck" %% "scalacheck" % v % "test" applyGlobal()
 
   def scalatest(v: String = "latest.release") = "org.scalatest" %% "scalatest" % v % "test" applyGlobal()
 
