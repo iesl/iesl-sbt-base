@@ -76,7 +76,7 @@ object IeslProject {
 
   def scalaSettings(debugLevel:DebugLevel) = Seq(
     scalaVersion := scalaV,
-    scalacOptions := Seq("-Xlint", "-deprecation", "-unchecked", "-Xcheckinit", "-g:"+debugLevel.name, "–verbose", "–explaintypes", "-encoding", "utf8"),
+    scalacOptions := Seq("-Xlint", "-deprecation", "-unchecked", "-Xcheckinit", "-g:"+debugLevel.name, "-encoding", "utf8"),  // scaladoc chokes on these "–verbose", "–explaintypes", 
     javacOptions ++= Seq("-Xlint:unchecked", "-encoding", "utf8")
   )
 
