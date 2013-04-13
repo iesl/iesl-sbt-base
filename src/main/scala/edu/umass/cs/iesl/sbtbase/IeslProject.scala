@@ -29,6 +29,21 @@ object IeslProject {
 
   case object NoSnapshotDependencies extends SnapshotsAllowedType
 
+  
+  sealed case class DebugLevel(name : String)
+  /*
+  "none" generates no debugging info,
+"source" generates only the source file attribute,
+"line" generates source and line number information,
+"vars" generates source, line number and local variable information,
+"notc" generates all of the above and will not perform tail call optimization.
+
+   */
+  case object DebugNone  extends DebugLevel("none")
+  case object DebugSource  extends DebugLevel("source")
+  case object DebugLine  extends DebugLevel("line")
+  case object DebugVars  extends DebugLevel("vars")
+  case object DebugNoTailcall  extends DebugLevel("notc")
 
   sealed case class RepoType()
 
@@ -59,9 +74,9 @@ object IeslProject {
     }
   }
 
-  val scalaSettings = Seq(
+  def scalaSettings(debugLevel:DebugLevel) = Seq(
     scalaVersion := scalaV,
-    scalacOptions := Seq("-Xlint", "-deprecation", "-unchecked", "-Xcheckinit", "-encoding", "utf8"),
+    scalacOptions := Seq("-Xlint", "-deprecation", "-unchecked", "-Xcheckinit", "-encoding", "utf8","-g:"+debugLevel.name,"–explaintypes"),
     javacOptions ++= Seq("-Xlint:unchecked", "-encoding", "utf8")
   )
 
@@ -285,11 +300,11 @@ class IeslProject(p: Project, allDeps: Dependencies) {
 
 
   def ieslSetup(vers: String, deps: Seq[ModuleID],
-                repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, org: String = iesl, conflict: ConflictStrategy = ConflictStrict): Project = {
+                repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, org: String = iesl, conflict: ConflictStrategy = ConflictStrict, debugLevel: DebugLevel = DebugVars): Project = {
 
     val (localDeps: Seq[RootProject], remoteDeps: Seq[ModuleID]) = substituteLocalProjects(deps)
 
-    val result = p.settings(scalaSettings: _*)
+    val result = p.settings(scalaSettings(debugLevel): _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
       .settings(getJarsTask)
       .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask, fixPom, allExternalDependencyClasspathTask) //, updateWithVersionReport)
