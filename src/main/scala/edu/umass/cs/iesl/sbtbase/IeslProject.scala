@@ -23,14 +23,14 @@ object IeslProject {
 
   implicit def enrichProject(p: Project)(implicit allDeps: Dependencies): IeslProject = new IeslProject(p, allDeps)
 
-  sealed case class SnapshotsAllowedType()
+  sealed trait SnapshotsAllowedType
 
   case object WithSnapshotDependencies extends SnapshotsAllowedType
 
   case object NoSnapshotDependencies extends SnapshotsAllowedType
 
   
-  sealed case class DebugLevel(name : String)
+  sealed abstract class DebugLevel(val name : String)
   /*
   "none" generates no debugging info,
 "source" generates only the source file attribute,
@@ -45,7 +45,7 @@ object IeslProject {
   case object DebugVars  extends DebugLevel("vars")
   case object DebugNoTailcall  extends DebugLevel("notc")
 
-  sealed case class RepoType()
+  sealed trait RepoType
 
   case object Public extends RepoType
 
