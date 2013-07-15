@@ -6,7 +6,7 @@ object IeslSbtBaseBuild extends Build {
 
   val iesl = "edu.umass.cs.iesl"
   val scalaV = "2.9.2"
-  val vers = "51"
+  val vers = "55"
 
   val packageTemplate = TaskKey[File]("package-template")
 
