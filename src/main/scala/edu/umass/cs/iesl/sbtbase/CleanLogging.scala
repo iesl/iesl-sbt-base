@@ -50,7 +50,8 @@ class CleanLogging(deps: Dependencies) {
     slf4j(slf4jVersion),
 
     // nice Scala syntax for slf4j
-    slf4s(),
+    //slf4s(),
+    scalalogging(),
 
     // direct legacy Jakarta Commons Logging calls to slf4j
     jclOverSlf4j(slf4jVersion),
