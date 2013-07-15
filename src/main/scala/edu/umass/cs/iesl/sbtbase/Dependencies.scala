@@ -237,8 +237,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def junit4(v: String = "latest.release") = "junit" % "junit" % v % "test" applyGlobal()
 
-  // current specs2 release version is broken; try snapshot
-  def specs2(v: String = "latest.integration") = "org.specs2" %% "specs2" % v % "test" applyGlobal()
+  def specs2(v: String = "latest.release") = "org.specs2" %% "specs2" % v % "test" applyGlobal()
 
   def scalacheck(v: String = "latest.release") = "org.scalacheck" %% "scalacheck" % v % "test" applyGlobal()
 
