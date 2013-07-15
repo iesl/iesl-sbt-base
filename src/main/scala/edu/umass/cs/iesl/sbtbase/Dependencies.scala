@@ -190,7 +190,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def slf4j(v: String = "latest.release") = "org.slf4j" % "slf4j-api" % v applyGlobal()
 
-  def subcut(v: String = "latest.release") =  "org.scala-tools.subcut" % "subcut_2.9.1" % v applyGlobal()  // NEW once 2.0 is released "com.escalatesoft.subcut" %% "subcut" % v applyGlobal()
+  def subcut(v: String = "latest.release") = "com.escalatesoft.subcut" %% "subcut" % v applyGlobal()
 
   def jacksonCore(v: String = "latest.release") = "org.codehaus.jackson" % "jackson-core-asl" % v applyGlobal()
 
