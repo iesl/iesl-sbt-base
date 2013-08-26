@@ -257,6 +257,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def jodatime(v: String = "latest.release") = "joda-time" % "joda-time" % v applyGlobal()
   
-  def scalatime(v: String = "latest.release") = "org.scalaj" %% "scalaj-time" % v applyGlobal()
+  //def scalatime(v: String = "latest.release") = "org.scalaj" %% "scalaj-time" % v applyGlobal()
+  def scalatime(v: String = "latest.release") = "com.github.nscala-time" %% "nscala-time" % v applyGlobal()
 
 }
