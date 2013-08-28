@@ -317,7 +317,7 @@ class IeslProject(p: Project, allDeps: Dependencies) {
       creds)
       .settings(setConflictStrategy(conflict))
 
-    localDeps.foldLeft(result)((b, a) => b.dependsOn(a))
+    localDeps.foldLeft(result)((b, a) => b.aggregate(a).dependsOn(a))
   }
 
 }
