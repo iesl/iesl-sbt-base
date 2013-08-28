@@ -153,6 +153,8 @@ Sometimes it can be useful to reference a local project directory for some exter
 
 (In this case the requested version number (and/or SNAPSHOT status) of the com.foobar:baz module will be ignored.)
 
+Note that this creates both an "aggregates" and a "depends-on" relationship between the two projects.  Also, running [sbt-idea](https://github.com/mpeltonen/sbt-idea) with this system property defined is an effective way of creating multi-module IntelliJ projects.
+
 Questions and feedback
 ======================
 
