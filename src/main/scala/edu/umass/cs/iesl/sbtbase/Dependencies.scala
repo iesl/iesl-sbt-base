@@ -63,11 +63,11 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def typesafeConfig(v: String = "latest.release") = "com.typesafe" % "config" % v applyGlobal()
 
-  def akkaActor(v: String = "latest.release") = "se.scalablesolutions.akka" % "akka-actor" % v applyGlobal()
+  def akkaActor(v: String = "latest.release") = "com.typesafe.akka" %% "akka-actor" % v applyGlobal()
 
-  def akkaSlf4j(v: String = "latest.release") = "se.scalablesolutions.akka" % "akka-slf4j" % v applyGlobal()
+  def akkaSlf4j(v: String = "latest.release") = "com.typesafe.akka" %% "akka-slf4j" % v applyGlobal()
 
-  def akkaRemote(v: String = "latest.release") = "se.scalablesolutions.akka" % "akka-remote" % v applyGlobal()
+  def akkaRemote(v: String = "latest.release") = "com.typesafe.akka" %% "akka-remote" % v applyGlobal()
 
   def boxterBrown(v: String = "latest.release") = "cc.acs" %% "boxter-brown" % v applyGlobal()
 
