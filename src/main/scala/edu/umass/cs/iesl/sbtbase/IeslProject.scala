@@ -283,7 +283,7 @@ object IeslProject {
       val localProjects = local.split(";").map(s => {
         val splitOnEquals(moduleId, path) = s.trim
         //(moduleId, new RootProject(file(path)))
-        (moduleId.trim, RootProject(file(path.trim)))
+        (moduleId.trim, RootProject(file(path.trim).toPath.toAbsolutePath.toFile))
       }).toMap
 
       for ((k, v) <- localProjects) {
