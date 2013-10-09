@@ -29,8 +29,9 @@ object IeslProject {
 
   case object NoSnapshotDependencies extends SnapshotsAllowedType
 
-  
-  sealed abstract class DebugLevel(val name : String)
+
+  sealed abstract class DebugLevel(val name: String)
+
   /*
   "none" generates no debugging info,
 "source" generates only the source file attribute,
@@ -39,11 +40,15 @@ object IeslProject {
 "notc" generates all of the above and will not perform tail call optimization.
 
    */
-  case object DebugNone  extends DebugLevel("none")
-  case object DebugSource  extends DebugLevel("source")
-  case object DebugLine  extends DebugLevel("line")
-  case object DebugVars  extends DebugLevel("vars")
-  case object DebugNoTailcall  extends DebugLevel("notc")
+  case object DebugNone extends DebugLevel("none")
+
+  case object DebugSource extends DebugLevel("source")
+
+  case object DebugLine extends DebugLevel("line")
+
+  case object DebugVars extends DebugLevel("vars")
+
+  case object DebugNoTailcall extends DebugLevel("notc")
 
   sealed trait RepoType
 
@@ -74,9 +79,9 @@ object IeslProject {
     }
   }
 
-  def scalaSettings(debugLevel:DebugLevel) = Seq(
+  def scalaSettings(debugLevel: DebugLevel) = Seq(
     scalaVersion := scalaV,
-    scalacOptions := Seq("-Xlint", "-deprecation", "-unchecked", "-Xcheckinit", "-g:"+debugLevel.name, "-encoding", "utf8"),  // scaladoc chokes on these "–verbose", "–explaintypes", 
+    scalacOptions := Seq("-Xlint", "-deprecation", "-unchecked", "-Xcheckinit", "-g:" + debugLevel.name, "-encoding", "utf8"), // scaladoc chokes on these "–verbose", "–explaintypes", 
     javacOptions ++= Seq("-Xlint:unchecked", "-encoding", "utf8")
   )
 
@@ -281,7 +286,17 @@ object IeslProject {
         (moduleId.trim, RootProject(file(path.trim)))
       }).toMap
 
-      val (l, r) = deps.partition(p => localProjects.contains(p.organization + ":" + p.name))
+      for ((k, v) <- localProjects) {
+        System.err.println("Local module map: " + k + " -> " + v)
+      }
+
+      val (l, r) = deps.partition(p => {
+        val result = localProjects.contains(p.organization + ":" + p.name)
+        if (result) {
+          System.err.println("Substituting local directory for dependency: " + p.organization + ":" + p.name + ":" + p.revision + " -> " + localProjects(p.organization + ":" + p.name))
+        }
+        result
+      })
 
       val lProjects = l.map(p => localProjects(p.organization + ":" + p.name))
       (lProjects, r)
@@ -293,8 +308,9 @@ object IeslProject {
 class IeslProject(p: Project, allDeps: Dependencies) {
   def cleanLogging = p.settings(CleanLogging.cleanLogging)
 
-  val standardLogging : Project = standardLogging("latest.release")
-  def standardLogging(slf4jVersion:String="latest.release") : Project = p.settings(libraryDependencies ++= new CleanLogging(allDeps).standardLogging(slf4jVersion))
+  val standardLogging: Project = standardLogging("latest.release")
+
+  def standardLogging(slf4jVersion: String = "latest.release"): Project = p.settings(libraryDependencies ++= new CleanLogging(allDeps).standardLogging(slf4jVersion))
 
   import IeslProject._
 
