@@ -275,6 +275,7 @@ object IeslProject {
     </dependencies>
 
   val splitOnEquals = "(.*)=(.*)".r
+  val splitOnColon = "(.*):(.*)".r
 
   def substituteLocalProjects(deps: Seq[ModuleID]): (Seq[RootProject], Seq[ModuleID]) = {
 
@@ -283,7 +284,15 @@ object IeslProject {
       val localProjects = local.split(";").map(s => {
         val splitOnEquals(moduleId, path) = s.trim
         //(moduleId, new RootProject(file(path)))
-        (moduleId.trim, RootProject(file(path.trim).toPath.toAbsolutePath.toFile))
+        try {
+          val splitOnColon(rootPath, projectName) = path
+          (moduleId.trim, ProjectRef(file(rootPath.trim).toPath.toAbsolutePath.toFile, projectName))
+        }
+        catch {
+          case e: MatchError => (moduleId.trim, RootProject(file(path.trim).toPath.toAbsolutePath.toFile))
+        }
+
+
       }).toMap
 
       for ((k, v) <- localProjects) {
