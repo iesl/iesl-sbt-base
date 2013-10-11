@@ -277,7 +277,7 @@ object IeslProject {
   val splitOnEquals = "(.*)=(.*)".r
   val splitOnColon = "(.*):(.*)".r
 
-  def substituteLocalProjects(deps: Seq[ModuleID]): (Seq[RootProject], Seq[ModuleID]) = {
+  def substituteLocalProjects(deps: Seq[ModuleID]): (Seq[ProjectReference], Seq[ModuleID]) = {
 
     val localOpt = Option(sys.props("localModules"))
     localOpt.map(local => {
