@@ -20,10 +20,9 @@ object IeslPluginLoader extends Build {
 }
 
 
+// todo: test this approach again
 // as of sbt 0.12.0 we can rebuild the plugin on the fly from the hg repository,
-// avoiding the Nexus URL chicken-and-egg problem (or rather, pushing it back one level to the Bitbucket URL)
-
-// ah, but sbt apparently doesn't hg update things is ~/.sbt/staging
+// avoiding the Nexus URL chicken-and-egg problem (or rather, pushing it back one level to the GitHub URL)
 
 /*
 object IeslPluginLoader extends Build {

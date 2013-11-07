@@ -36,7 +36,7 @@ Installation
 
 The easiest way to start using iesl-sbt-base for a new project is to grab the template project [here](https://dev-iesl.cs.umass.edu/jenkins/job/iesl-sbt-base/lastSuccessfulBuild/artifact/target/iesl-sbt-base-template.tgz), or equivalently check out the repository and copy `/src/iesl-sbt-base-template`.  Then modify the `project/Build.scala` you find there.
 
-The main point of the template is that it loads the iesl-sbt-plugin from our Maven repository (in `project/project/Plugins.scala`).  It also provides a standard and fairly complete `.hgignore` file, as well as a stub `logback.xml` logging configuration (see below).
+The main point of the template is that it loads the iesl-sbt-plugin from our Maven repository (in `project/project/Plugins.scala`).  It also provides a standard and fairly complete `.gitignore` and `.hgignore` files, as well as a stub `logback.xml` logging configuration (see below).
 
 To add the plugin manually (i.e., to an existing project), add these to `project/plugins.sbt`:
 
