@@ -168,9 +168,11 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def scalateCore(v: String = "latest.release") = "org.fusesource.scalate" % "scalate-core" % v applyGlobal()
 
-  def scalazCore(v: String = "latest.release") = "org.scalaz" %% "scalaz-core" % v applyGlobal()
+  def scalazCore(v: String = "7.0.5") = "org.scalaz" %% "scalaz-core" % v applyGlobal()
 
-  def scalazTypelevel(v: String = "latest.release") = "org.scalaz" %% "scalaz-typelevel" % v applyGlobal()
+  def scalazConcurrent(v: String = "7.0.5") = "org.scalaz" %% "scalaz-concurrent" % v applyGlobal()
+
+  def scalazTypelevel(v: String = "7.0.5") = "org.scalaz" %% "scalaz-typelevel" % v applyGlobal()
 
   def scalaQuery(v: String = "latest.release") = "org.scalaquery" %% "scalaquery" % v applyGlobal()
 
