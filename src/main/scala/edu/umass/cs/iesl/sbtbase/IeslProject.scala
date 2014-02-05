@@ -39,12 +39,11 @@ object IeslProject {
   sealed abstract class DebugLevel(val name: String)
 
   /*
-  "none" generates no debugging info,
-"source" generates only the source file attribute,
-"line" generates source and line number information,
-"vars" generates source, line number and local variable information,
-"notc" generates all of the above and will not perform tail call optimization.
-
+   "none" generates no debugging info,
+   "source" generates only the source file attribute,
+   "line" generates source and line number information,
+   "vars" generates source, line number and local variable information,
+   "notc" generates all of the above and will not perform tail call optimization.
    */
   case object DebugNone extends DebugLevel("none")
 
@@ -337,8 +336,15 @@ class IeslProject(p: Project, allDeps: Dependencies) {
   import IeslProject._
 
 
-  def ieslSetup(vers: String, deps: Seq[ModuleID],
-                repotype: RepoType, allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies, org: String = iesl, conflict: ConflictStrategy = ConflictStrict, debugLevel: DebugLevel = DebugVars): Project = {
+  def ieslSetup(
+    vers: String,
+    deps: Seq[ModuleID],
+    repotype: RepoType,
+    allowSnapshots: SnapshotsAllowedType = NoSnapshotDependencies,
+    org: String = iesl,
+    conflict: ConflictStrategy = ConflictStrict,
+    debugLevel: DebugLevel = DebugVars
+  ): Project = {
 
     val (localDeps: Seq[ProjectReference], remoteDeps: Seq[ModuleID]) = substituteLocalProjects(deps)
 
@@ -355,7 +361,8 @@ class IeslProject(p: Project, allDeps: Dependencies) {
       creds)
       .settings(setConflictStrategy(conflict))
 
-    localDeps.foldLeft(result)((b, a) => b.aggregate(a).dependsOn(a))
+    // localDeps.foldLeft(result)((b, a) => b.aggregate(a).dependsOn(a))
+    localDeps.foldLeft(result)((b, a) => b.dependsOn(a))
   }
 
 }
