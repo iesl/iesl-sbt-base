@@ -91,7 +91,7 @@ object IeslProject {
       "-g:" + debugLevel.name,
       "-encoding", "utf8",
       "-feature",
-      // "-language:reflectiveCalls",
+      "-language:reflectiveCalls",
       "-language:implicitConversions", "-language:postfixOps"
     ),
     javacOptions ++= Seq("-Xlint:unchecked", "-encoding", "utf8")
