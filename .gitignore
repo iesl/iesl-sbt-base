@@ -35,6 +35,7 @@ CVS
 ## sbt
 
 .sbtopts
+.sbtopts-*
 .cache/
 .history/
 .lib/
