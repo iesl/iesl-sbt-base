@@ -8,7 +8,6 @@ package edu.umass.cs.iesl.sbtbase
 
 import sbt._
 import sbt.Keys._
-import scala.Some
 import io.{BufferedSource, Source}
 import java.io.{IOException, FileWriter, BufferedWriter}
 import xml.transform.{RewriteRule, RuleTransformer}

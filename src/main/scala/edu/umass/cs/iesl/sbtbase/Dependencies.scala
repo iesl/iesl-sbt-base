@@ -7,13 +7,14 @@
 package edu.umass.cs.iesl.sbtbase
 
 import sbt._
+import Keys._
 import Config._
 
 /**
  *
  * @param globalModuleFilter a function that is applied to each dependency ModuleID, e.g. to globally exclude certain transitive dependencies.
  */
-class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
+class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m)(scalaV: ScalaVersion) {
 
   implicit def enrichModuleID(m: ModuleID) = new RichModuleID(m)
 
@@ -41,7 +42,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def langdetect(v: String = "latest.release") = "com.cybozu.labs" % "langdetect" % v applyGlobal()
 
-  def scalaCompiler(v: String = scalaV) = "org.scala-lang" % "scala-compiler" % v applyGlobal()
+  def scalaCompiler(v: String = scalaV.full) = "org.scala-lang" % "scala-compiler" % v applyGlobal()
 
   def ieslScalaCommons(v: String = "latest.release") = "edu.umass.cs.iesl" %% "scalacommons" % v notTransitive() applyGlobal()//  exclude("com.davidsoergel", "dsutils")
 
@@ -77,7 +78,7 @@ class Dependencies(globalModuleFilter: ModuleID => ModuleID = (m:ModuleID)=>m) {
 
   def boxterBrown(v: String = "latest.release") = "cc.acs" %% "boxter-brown" % v applyGlobal()
 
-  def casbahLib(s: String)(v: String = "latest.release") = "com.mongodb.casbah" % ("casbah-" + s + "_" + scalaV) % v applyGlobal()
+  def casbahLib(s: String)(v: String = "latest.release") = "com.mongodb.casbah" % ("casbah-" + s + "_" + scalaVersion) % v applyGlobal()
 
   def casbahLibs(v: String = "latest.release") = "core commons query".split(" ").toSeq map (l => casbahLib(l)(v))
 

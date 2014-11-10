@@ -18,8 +18,6 @@ import java.io.{IOException, FileWriter, BufferedWriter}
 import xml.transform.{RewriteRule, RuleTransformer}
 import xml.{Node => XNode, Text, Elem}
 
-//import DependencyVersioning._
-
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
  * @version $Id$
@@ -27,7 +25,7 @@ import xml.{Node => XNode, Text, Elem}
 
 object IeslProject {
 
-  implicit def enrichProject(p: Project)(implicit allDeps: Dependencies): IeslProject = new IeslProject(p, allDeps)
+  implicit def enrichProject(p: Project)(implicit allDeps: Dependencies, scalaVersion: ScalaVersion): IeslProject = new IeslProject(p, allDeps, scalaVersion)
 
   sealed trait SnapshotsAllowedType
 
@@ -84,8 +82,8 @@ object IeslProject {
     }
   }
 
-  def scalaSettings(debugLevel: DebugLevel) = Seq(
-    scalaVersion := scalaV,
+  def scalaSettings(scalaV: ScalaVersion, debugLevel: DebugLevel) = Seq(
+    scalaVersion := scalaV.toString,
     scalacOptions := Seq(
       "-Xlint", "-deprecation", "-unchecked", "-Xcheckinit",
       "-g:" + debugLevel.name,
@@ -326,7 +324,7 @@ object IeslProject {
 
 }
 
-class IeslProject(p: Project, allDeps: Dependencies) {
+class IeslProject(p: Project, allDeps: Dependencies, scalaV: ScalaVersion) {
   def cleanLogging = p.settings(CleanLogging.cleanLogging)
 
   val standardLogging: Project = standardLogging("latest.release")
@@ -348,14 +346,14 @@ class IeslProject(p: Project, allDeps: Dependencies) {
 
     val (localDeps: Seq[ProjectReference], remoteDeps: Seq[ModuleID]) = substituteLocalProjects(deps)
 
-    val result = p.settings(scalaSettings(debugLevel): _*)
+    val result = p.settings(scalaSettings(scalaV, debugLevel): _*)
       .settings(resolvers ++= ((if (allowSnapshots == WithSnapshotDependencies) IESLSnapshotRepos else Seq.empty) ++ IESLReleaseRepos))
       .settings(getJarsTask)
       .settings(versionReportTask, versionUpdateReportTask, acceptVersionsTask, fixPom, allExternalDependencyClasspathTask) //, updateWithVersionReport)
       .settings(
       organization := org,
       version := vers,
-      scalaVersion := scalaV,
+      scalaVersion := scalaV.toString,
       libraryDependencies ++= remoteDeps,
       publishToIesl(vers, repotype),
       creds)
